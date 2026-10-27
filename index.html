@@ -314,10 +314,29 @@
         <div id="sa-tab-submit-proxy" class="tab-content space-y-6">
             <div class="max-w-3xl mx-auto glass-card p-8 rounded-2xl">
                 <form class="space-y-4" onsubmit="event.preventDefault(); submitLombaBaru(this, 'superadmin');">
-                    <div class="p-4 rounded-xl bg-purple-50/50 border border-purple-100 mb-4 space-y-2">
-                        <label class="block text-xs font-bold uppercase text-purple-900">Pilih Mahasiswa</label>
-                        <select id="sa-form-select-user" onchange="autoFillStudentInfo()" class="w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm"></select>
+                    
+                    <!-- PENCARIAN MAHASISWA & FITUR TIM (BERKELOMPOK) -->
+                    <div class="p-4 rounded-xl bg-purple-50/50 border border-purple-100 mb-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold uppercase text-purple-900">Pilih Mahasiswa / Tim (Pemilik Prestasi)</label>
+                            <button type="button" onclick="addTeamMemberField()" class="px-3 py-1 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold text-[11px] transition flex items-center gap-1 shadow-sm">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Anggota (+)
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Ketik minimal 3 huruf nama mahasiswa untuk mencari. Klik tombol (+) jika lomba bersifat kelompok.</p>
+                        
+                        <div id="team-members-container" class="space-y-2">
+                            <div class="flex items-center gap-2 relative student-row">
+                                <div class="relative flex-grow">
+                                    <input type="text" placeholder="Ketik minimal 3 huruf nama mahasiswa..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
+                                    <input type="hidden" class="student-id-hidden">
+                                    <div class="student-suggestions hidden absolute left-0 top-full mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-40 overflow-y-auto"></div>
+                                </div>
+                                <input type="text" readonly placeholder="Prodi otomatis..." class="student-prodi-display w-48 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 cursor-not-allowed hidden sm:block">
+                            </div>
+                        </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Perlombaan</label><input id="sa-form-lomba-nama" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal"></div>
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penyelenggara Kompetisi</label><input id="sa-form-lomba-penyelenggara" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal"></div>
@@ -480,7 +499,7 @@
         }
 
         let app, auth, db;
-        let currentUserRole = null; // Menyimpan status role aktif
+        let currentUserRole = null;
 
         // ==========================================
         // LOCAL STORAGE FALLBACK & STATE
@@ -503,7 +522,6 @@
             } else {
                 renderLogbookTable();
                 renderRekapTable(rekapPrestasiData);
-                populateSuperadminUserDropdown();
                 renderUserMgmtTable();
             }
         }
@@ -527,7 +545,6 @@
             }
             renderLogbookTable();
             renderRekapTable(rekapPrestasiData);
-            populateSuperadminUserDropdown();
             renderUserMgmtTable();
         }
 
@@ -612,6 +629,7 @@
             
             document.getElementById('nav-items-mahasiswa').classList.replace('flex', 'hidden');
             document.getElementById('nav-items-superadmin').classList.replace('flex', 'hidden');
+            document.getElementById('nav-public-items').classList.replace('flex', 'hidden'); // Dipulihkan
             document.getElementById('nav-public-items').classList.replace('hidden', 'flex');
             
             document.getElementById('nav-btn-dashboard').classList.add('hidden');
@@ -621,8 +639,72 @@
         };
 
         // ==========================================
-        // DATA HANDLING (CREATE, UPDATE, DELETE)
+        // DATA HANDLING & AUTOCOMPLETE TIM
         // ==========================================
+        window.handleStudentSearch = function(inputEl) {
+            const keyword = inputEl.value.trim().toLowerCase();
+            const row = inputEl.closest('.student-row');
+            const suggestionBox = row.querySelector('.student-suggestions');
+            const hiddenIdInput = row.querySelector('.student-id-hidden');
+            const prodiDisplay = row.querySelector('.student-prodi-display');
+
+            hiddenIdInput.value = '';
+            prodiDisplay.value = '';
+
+            if (keyword.length < 3) {
+                suggestionBox.classList.add('hidden');
+                suggestionBox.innerHTML = '';
+                return;
+            }
+
+            const mhsList = userDatabase.filter(u => u.role === 'Mahasiswa' && u.name.toLowerCase().includes(keyword));
+
+            if (mhsList.length === 0) {
+                suggestionBox.innerHTML = `<div class="p-2.5 text-xs text-slate-400 italic">Mahasiswa tidak ditemukan</div>`;
+                suggestionBox.classList.remove('hidden');
+                return;
+            }
+
+            suggestionBox.innerHTML = '';
+            mhsList.forEach(mhs => {
+                const item = document.createElement('div');
+                item.className = "p-2.5 hover:bg-purple-50 cursor-pointer text-xs border-b border-slate-100 last:border-none";
+                item.innerHTML = `<div class="font-bold text-slate-800">${mhs.name}</div><div class="text-[10px] text-slate-500">${mhs.id} - ${mhs.prodi}</div>`;
+                
+                item.onclick = function() {
+                    inputEl.value = mhs.name;
+                    hiddenIdInput.value = mhs.id;
+                    prodiDisplay.value = mhs.prodi;
+                    suggestionBox.classList.add('hidden');
+                    
+                    if (row.parentElement.firstElementChild === row) {
+                        document.getElementById('sa-form-lomba-prodi').value = mhs.prodi;
+                    }
+                };
+                suggestionBox.appendChild(item);
+            });
+            suggestionBox.classList.remove('hidden');
+        };
+
+        window.addTeamMemberField = function() {
+            const container = document.getElementById('team-members-container');
+            const newRow = document.createElement('div');
+            newRow.className = "flex items-center gap-2 relative student-row pt-1";
+            newRow.innerHTML = `
+                <div class="relative flex-grow">
+                    <input type="text" placeholder="Ketik minimal 3 huruf nama anggota..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
+                    <input type="hidden" class="student-id-hidden">
+                    <div class="student-suggestions hidden absolute left-0 top-full mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-40 overflow-y-auto"></div>
+                </div>
+                <input type="text" readonly placeholder="Prodi..." class="student-prodi-display w-48 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 cursor-not-allowed hidden sm:block">
+                <button type="button" onclick="this.closest('.student-row').remove()" class="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition" title="Hapus Anggota">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+            `;
+            container.appendChild(newRow);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
         window.saveLogbook = async function() {
             const id = document.getElementById('logbook-id').value;
             const payload = { 
@@ -678,8 +760,12 @@
             
             let namaMahasiswa = 'Nama User';
             if (isSuper) {
-                const user = userDatabase.find(u => u.id === document.getElementById('sa-form-select-user').value);
-                namaMahasiswa = user ? user.name : 'Mahasiswa Manual';
+                const nameInputs = document.querySelectorAll('#team-members-container .student-search-input');
+                let namesArray = [];
+                nameInputs.forEach(input => {
+                    if(input.value.trim()) namesArray.push(input.value.trim());
+                });
+                namaMahasiswa = namesArray.length > 0 ? namesArray.join(', ') : 'Mahasiswa Manual';
             }
 
             const rawPelaksanaan = document.getElementById(`${prefix}lomba-tgl-pelaksanaan`).value;
@@ -713,6 +799,16 @@
             form.reset();
 
             if (isSuper) {
+                document.getElementById('team-members-container').innerHTML = `
+                    <div class="flex items-center gap-2 relative student-row">
+                        <div class="relative flex-grow">
+                            <input type="text" placeholder="Ketik minimal 3 huruf nama mahasiswa..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
+                            <input type="hidden" class="student-id-hidden">
+                            <div class="student-suggestions hidden absolute left-0 top-full mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-40 overflow-y-auto"></div>
+                        </div>
+                        <input type="text" readonly placeholder="Prodi otomatis..." class="student-prodi-display w-48 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 cursor-not-allowed hidden sm:block">
+                    </div>
+                `;
                 toggleCustomAwardInput('sa-form-lomba-capaian-select', 'sa-custom-award-container', 'sa-form-lomba-custom-award');
                 switchSuperadminTab('rekap-list');
                 renderSuperadminTable(rekapPrestasiData);
@@ -721,6 +817,7 @@
                 renderRekapTable(rekapPrestasiData);
                 switchMahasiswaTab('logbook');
             }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
         window.approveLogbook = async function(id) {
@@ -765,7 +862,6 @@
                 form.reset();
                 closeModalAddUser();
                 renderUserMgmtTable();
-                populateSuperadminUserDropdown();
 
                 Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} berhasil dibuat.` });
             } catch (err) {
@@ -920,23 +1016,6 @@
         window.filterSuperadminTable = function() {
             const q = document.getElementById('search-superadmin-input').value.toLowerCase().trim();
             renderSuperadminTable(rekapPrestasiData.filter(i => i.name.toLowerCase().includes(q) || i.lomba.toLowerCase().includes(q) || i.prodi.toLowerCase().includes(q)));
-        };
-
-        window.populateSuperadminUserDropdown = function() {
-            const selectEl = document.getElementById('sa-form-select-user');
-            if (!selectEl || !userDatabase) return;
-            selectEl.innerHTML = '';
-            userDatabase.filter(u => u.role === 'Mahasiswa').forEach(mhs => {
-                const opt = document.createElement('option'); opt.value = mhs.id; opt.textContent = `${mhs.name} (${mhs.id})`;
-                selectEl.appendChild(opt);
-            });
-            window.autoFillStudentInfo();
-        };
-
-        window.autoFillStudentInfo = function() {
-            const selectedId = document.getElementById('sa-form-select-user').value;
-            const user = userDatabase.find(u => u.id === selectedId);
-            if (user) document.getElementById('sa-form-lomba-prodi').value = user.prodi;
         };
 
         // Slider Logic

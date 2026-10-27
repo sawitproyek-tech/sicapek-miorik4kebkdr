@@ -259,6 +259,10 @@
                         <label class="block text-xs font-bold uppercase text-amber-700 mb-1">Nama Penghargaan Khusus</label>
                         <input id="form-lomba-custom-award" type="text" class="w-full bg-amber-50/50 border border-amber-300 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Link Google Drive Sertifikat</label>
+                        <input id="form-lomba-cert" type="url" placeholder="https://drive.google.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
+                    </div>
                     <button type="submit" class="w-full py-3.5 rounded-xl bg-kemenkes-lime hover:bg-kemenkes-lime-dark text-white font-bold text-xs transition shadow-md mt-2">Kirim Laporan Prestasi</button>
                 </form>
             </div>
@@ -303,7 +307,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-900 text-white font-bold uppercase tracking-wider">
-                            <tr><th class="p-4">Tgl Pelaksanaan</th><th class="p-4">Tgl Pengumuman</th><th class="p-4">Nama Mahasiswa</th><th class="p-4">Prodi</th><th class="p-4">Semester</th><th class="p-4">Nama Perlombaan</th><th class="p-4">Penyelenggara</th><th class="p-4">Tingkat</th><th class="p-4">Capaian</th><th class="p-4 text-center">Status Laporan</th></tr>
+                            <tr><th class="p-4">Tgl Pelaksanaan</th><th class="p-4">Tgl Pengumuman</th><th class="p-4">Nama Mahasiswa</th><th class="p-4">Prodi</th><th class="p-4">Semester</th><th class="p-4">Nama Perlombaan</th><th class="p-4">Penyelenggara</th><th class="p-4">Tingkat</th><th class="p-4">Capaian</th><th class="p-4 text-center">Sertifikat</th><th class="p-4 text-center">Status Laporan</th></tr>
                         </thead>
                         <tbody id="superadmin-table-body" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
                     </table>
@@ -357,6 +361,10 @@
                         </select>
                     </div>
                     <div id="sa-custom-award-container" class="hidden"><input id="sa-form-lomba-custom-award" type="text" class="w-full bg-amber-50/50 border border-amber-300 rounded-xl px-4 py-2.5 text-xs"></div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Link Google Drive Sertifikat</label>
+                        <input id="sa-form-lomba-cert" type="url" placeholder="https://drive.google.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
+                    </div>
                     <button type="submit" class="w-full py-3.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs transition shadow-md mt-2">Input & Simpan Prestasi Atas Nama Mahasiswa</button>
                 </form>
             </div>
@@ -522,6 +530,7 @@
             } else {
                 renderLogbookTable();
                 renderRekapTable(rekapPrestasiData);
+                renderSuperadminTable(rekapPrestasiData);
                 renderUserMgmtTable();
             }
         }
@@ -545,6 +554,7 @@
             }
             renderLogbookTable();
             renderRekapTable(rekapPrestasiData);
+            renderSuperadminTable(rekapPrestasiData);
             renderUserMgmtTable();
         }
 
@@ -629,7 +639,7 @@
             
             document.getElementById('nav-items-mahasiswa').classList.replace('flex', 'hidden');
             document.getElementById('nav-items-superadmin').classList.replace('flex', 'hidden');
-            document.getElementById('nav-public-items').classList.replace('flex', 'hidden'); // Dipulihkan
+            document.getElementById('nav-public-items').classList.replace('flex', 'hidden');
             document.getElementById('nav-public-items').classList.replace('hidden', 'flex');
             
             document.getElementById('nav-btn-dashboard').classList.add('hidden');
@@ -774,13 +784,16 @@
 
             const selectCapaian = document.getElementById(`${prefix}lomba-capaian-select`).value;
             const finalCapaian = selectCapaian === 'CUSTOM' ? document.getElementById(`${prefix}lomba-custom-award`).value.trim() : selectCapaian;
+            
+            // Ambil link sertifikat Google Drive
+            const certLink = document.getElementById(`${prefix}lomba-cert`) ? document.getElementById(`${prefix}lomba-cert`).value.trim() : '#';
 
             const newPrestasi = {
                 tglPelaksanaan: formatTgl(rawPelaksanaan), tglPengumuman: formatTgl(rawPengumuman),
                 name: namaMahasiswa, prodi: document.getElementById(`${prefix}lomba-prodi`).value,
                 semester: document.getElementById(`${prefix}lomba-semester`).value, lomba: document.getElementById(`${prefix}lomba-nama`).value,
                 penyelenggara: document.getElementById(`${prefix}lomba-penyelenggara`).value, tingkat: document.getElementById(`${prefix}lomba-tingkat`).value,
-                capaian: finalCapaian
+                capaian: finalCapaian, certificateUrl: certLink
             };
 
             try {
@@ -878,6 +891,7 @@
             if (!dataList || dataList.length === 0) return tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 font-semibold">Tidak ada data.</td></tr>`;
             
             dataList.forEach(item => {
+                const certLinkHtml = item.certificateUrl && item.certificateUrl !== '#' ? `<a href="${item.certificateUrl}" target="_blank" class="text-kemenkes-teal font-bold hover:underline flex items-center justify-center gap-1"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Lihat</a>` : `<span class="text-slate-400 italic text-[10px]">Tidak ada</span>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50">
                         <td class="p-4 text-slate-500">${item.tglPelaksanaan}</td><td class="p-4 text-slate-500">${item.tglPengumuman}</td>
@@ -885,7 +899,7 @@
                         <td class="p-4 font-semibold text-slate-600">${item.semester}</td><td class="p-4 font-semibold text-slate-800">${item.lomba}</td>
                         <td class="p-4 font-medium text-slate-600">${item.penyelenggara}</td><td class="p-4">${getBadgeTingkat(item.tingkat)}</td>
                         <td class="p-4">${getBadgeCapaian(item.capaian)}</td>
-                        <td class="p-4 text-center"><a href="#" class="text-kemenkes-teal font-bold"><i data-lucide="file-text" class="w-4 h-4 inline"></i></a></td>
+                        <td class="p-4 text-center">${certLinkHtml}</td>
                     </tr>`;
             });
             lucide.createIcons();
@@ -895,15 +909,17 @@
             const tbody = document.getElementById('superadmin-table-body');
             document.getElementById('superadmin-total-count').innerText = dataList ? dataList.length : 0;
             tbody.innerHTML = '';
-            if (!dataList || dataList.length === 0) return tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 font-semibold">Tidak ada data.</td></tr>`;
+            if (!dataList || dataList.length === 0) return tbody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-slate-400 font-semibold">Tidak ada data.</td></tr>`;
             
             dataList.forEach(item => {
+                const certLinkHtml = item.certificateUrl && item.certificateUrl !== '#' ? `<a href="${item.certificateUrl}" target="_blank" class="text-purple-700 font-bold hover:underline flex items-center justify-center gap-1"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Link Drive</a>` : `<span class="text-slate-400 italic text-[10px]">Tidak ada</span>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50">
                         <td class="p-4 text-slate-500">${item.tglPelaksanaan}</td><td class="p-4 text-slate-500">${item.tglPengumuman}</td>
                         <td class="p-4 font-bold">${item.name}</td><td class="p-4 text-kemenkes-teal-dark">${item.prodi}</td>
                         <td class="p-4">${item.semester}</td><td class="p-4">${item.lomba}</td><td class="p-4">${item.penyelenggara}</td>
                         <td class="p-4">${getBadgeTingkat(item.tingkat)}</td><td class="p-4">${getBadgeCapaian(item.capaian)}</td>
+                        <td class="p-4 text-center">${certLinkHtml}</td>
                         <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Terverifikasi</span></td>
                     </tr>`;
             });

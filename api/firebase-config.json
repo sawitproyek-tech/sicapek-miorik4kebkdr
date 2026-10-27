@@ -1,8 +1,10 @@
 {
-  "apiKey": "AIzaSyAcBba1YhQ0...",
-  "authDomain": "sicapek-miori.firebaseapp.com",
-  "projectId": "sicapek-miori",
-  "storageBucket": "sicapek-miori.firebasestorage.app",
-  "messagingSenderId": "6548285248",
-  "appId": "1:6548285248:web:e5691afcfc5d9360d07ca5"
-}
+    "apiKey": "AIzaSyAlqRJYGHWPhdVinlrBj6aNkFFBzTPvdfc",
+    "authDomain": "kemahasiswaan-f41f7.firebaseapp.com",
+    "databaseURL": "https://kemahasiswaan-f41f7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "kemahasiswaan-f41f7",
+    "storageBucket": "kemahasiswaan-f41f7.firebasestorage.app",
+    "messagingSenderId": "183052782255",
+    "appId": "1:183052782255:web:054f1979618010ffbde25a",
+    "measurementId": "G-2XTN5JN0EP"
+  }

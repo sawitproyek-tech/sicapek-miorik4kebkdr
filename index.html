@@ -468,12 +468,12 @@
         // ==========================================
         async function getFirebaseConfig() {
             try {
-                // Konfigurasi ini idealnya diambil dari API Endpoint agar API Key tidak ter-expose di HTML
-                const response = await fetch('/api/firebase-config'); 
+                // Arahkan langsung ke nama file fisik di dalam folder api
+                const response = await fetch('./api/firebase-config.json'); 
                 if (!response.ok) throw new Error("Gagal mengambil konfigurasi");
                 return await response.json();
             } catch (error) {
-                console.warn("Menjalankan sistem tanpa koneksi Firebase terpusat (mode offline/local).");
+                console.warn("Menjalankan sistem tanpa koneksi Firebase terpusat.", error);
                 return null;
             }
         }

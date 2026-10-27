@@ -69,6 +69,7 @@
             <div id="nav-public-items" class="flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <button onclick="showPublicSection('beranda')" id="nav-btn-beranda" class="public-nav-btn text-kemenkes-teal font-bold border-b-2 border-kemenkes-teal py-1">Beranda</button>
                 <button onclick="showPublicSection('rekap')" id="nav-btn-rekap" class="public-nav-btn hover:text-kemenkes-teal py-1">Rekapitulasi Prestasi</button>
+                <button onclick="returnToDashboard()" id="nav-btn-dashboard" class="hidden public-nav-btn hover:text-kemenkes-teal py-1 font-bold text-slate-800">Dashboard</button>
             </div>
 
             <!-- Nav Items Mahasiswa -->
@@ -241,7 +242,7 @@
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tingkat Perlombaan</label>
                         <select id="form-lomba-tingkat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
-                            <option value="Lokal / Wilayah">Lokal / Wilayah</option><option value="Nasional" selected>Nasional</option><option value="Internasional">Internasional</option>
+                            <option value="Lokal">Lokal</option><option value="Nasional" selected>Nasional</option><option value="Internasional">Internasional</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,7 +252,7 @@
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Capaian / Hasil</label>
                         <select id="form-lomba-capaian-select" onchange="toggleCustomAwardInput('form-lomba-capaian-select', 'custom-award-container', 'form-lomba-custom-award')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
-                            <option value="Juara I">Juara I</option><option value="Juara II">Juara II</option><option value="Juara III">Juara III</option><option value="Peserta / Finalis">Peserta / Finalis</option><option value="CUSTOM">Penghargaan Khusus / Custom Award</option>
+                            <option value="Juara I">Juara I</option><option value="Juara II">Juara II</option><option value="Juara III">Juara III</option><option value="CUSTOM">Penghargaan Khusus</option>
                         </select>
                     </div>
                     <div id="custom-award-container" class="hidden">
@@ -325,7 +326,7 @@
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Asal Prodi</label><input id="sa-form-lomba-prodi" type="text" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-600 cursor-not-allowed"></div>
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Semester</label><select id="sa-form-lomba-semester" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"><option value="Semester 6" selected>Semester 6</option></select></div>
                     </div>
-                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tingkat</label><select id="sa-form-lomba-tingkat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"><option value="Nasional">Nasional</option><option value="Internasional" selected>Internasional</option></select></div>
+                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tingkat</label><select id="sa-form-lomba-tingkat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"><option value="Lokal">Lokal</option><option value="Nasional">Nasional</option><option value="Internasional" selected>Internasional</option></select></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tgl Pelaksanaan</label><input id="sa-form-lomba-tgl-pelaksanaan" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></div>
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tgl Pengumuman</label><input id="sa-form-lomba-tgl-pengumuman" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></div>
@@ -333,7 +334,7 @@
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Capaian / Hasil</label>
                         <select id="sa-form-lomba-capaian-select" onchange="toggleCustomAwardInput('sa-form-lomba-capaian-select', 'sa-custom-award-container', 'sa-form-lomba-custom-award')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
-                            <option value="Juara I">Juara I</option><option value="CUSTOM">Penghargaan Khusus</option>
+                            <option value="Juara I">Juara I</option><option value="Juara II">Juara II</option><option value="Juara III">Juara III</option><option value="CUSTOM">Penghargaan Khusus</option>
                         </select>
                     </div>
                     <div id="sa-custom-award-container" class="hidden"><input id="sa-form-lomba-custom-award" type="text" class="w-full bg-amber-50/50 border border-amber-300 rounded-xl px-4 py-2.5 text-xs"></div>
@@ -428,6 +429,7 @@
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Peran (Role)</label><select id="add-user-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"><option value="Mahasiswa">Mahasiswa</option><option value="Pembimbing">Pembimbing</option></select></div>
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Program Studi</label><input id="add-user-prodi" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Email</label><input id="add-user-email" type="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kata Sandi</label><input id="add-user-password" type="password" required placeholder="Minimal 6 karakter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
                 <div class="pt-2 flex gap-2">
                     <button type="button" onclick="closeModalAddUser()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50">Batal</button>
                     <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-kemenkes-teal hover:bg-kemenkes-teal-dark text-white font-bold text-xs shadow-md">Simpan User</button>
@@ -460,15 +462,14 @@
     <!-- FIREBASE SDK MODULAR v10 & SECURE SCRIPT APLIKASI -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, deleteDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ==========================================
         // DYNAMIC CONFIGURATION FETCHING
         // ==========================================
         async function getFirebaseConfig() {
             try {
-                // Arahkan langsung ke nama file fisik di dalam folder api
                 const response = await fetch('./api/firebase-config.json'); 
                 if (!response.ok) throw new Error("Gagal mengambil konfigurasi");
                 return await response.json();
@@ -479,6 +480,7 @@
         }
 
         let app, auth, db;
+        let currentUserRole = null; // Menyimpan status role aktif
 
         // ==========================================
         // LOCAL STORAGE FALLBACK & STATE
@@ -499,7 +501,6 @@
                 db = getFirestore(app);
                 await fetchFirestoreData();
             } else {
-                // Render data dari localStorage jika offline
                 renderLogbookTable();
                 renderRekapTable(rekapPrestasiData);
                 populateSuperadminUserDropdown();
@@ -564,8 +565,11 @@
         };
 
         window.setupUserDashboard = function(role, name, subtext) {
+            currentUserRole = role;
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-            document.getElementById('nav-public-items').classList.add('hidden');
+            
+            document.getElementById('nav-public-items').classList.remove('hidden');
+            document.getElementById('nav-btn-dashboard').classList.remove('hidden');
             document.getElementById('nav-login-btn').classList.add('hidden');
             
             const profileNav = document.getElementById('nav-user-profile');
@@ -575,27 +579,30 @@
             document.getElementById('user-display-name').innerText = name;
             document.getElementById('user-display-role').innerText = subtext;
 
-            if (role === 'mahasiswa') {
+            returnToDashboard();
+        };
+
+        window.returnToDashboard = function() {
+            document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.public-nav-btn').forEach(btn => btn.classList.remove('text-kemenkes-teal', 'font-bold', 'border-b-2', 'border-kemenkes-teal'));
+            document.getElementById('nav-btn-dashboard').classList.add('text-kemenkes-teal', 'font-bold', 'border-b-2', 'border-kemenkes-teal');
+            
+            document.getElementById('nav-items-mahasiswa').classList.add('hidden');
+            document.getElementById('nav-items-superadmin').classList.add('hidden');
+
+            if (currentUserRole === 'mahasiswa') {
                 document.getElementById('nav-items-mahasiswa').classList.replace('hidden', 'flex');
-                document.getElementById('nav-items-superadmin').classList.add('hidden');
                 document.getElementById('view-dashboard-mahasiswa').classList.add('active');
-                renderLogbookTable();
-            } else if (role === 'pembimbing') {
-                document.getElementById('nav-items-mahasiswa').classList.add('hidden');
-                document.getElementById('nav-items-superadmin').classList.add('hidden');
+            } else if (currentUserRole === 'pembimbing') {
                 document.getElementById('view-dashboard-pembimbing').classList.add('active');
-                renderPembimbingTable();
-            } else if (role === 'superadmin') {
-                document.getElementById('nav-items-mahasiswa').classList.add('hidden');
+            } else if (currentUserRole === 'superadmin') {
                 document.getElementById('nav-items-superadmin').classList.replace('hidden', 'flex');
                 document.getElementById('view-dashboard-superadmin').classList.add('active');
-                renderSuperadminTable(rekapPrestasiData);
-                populateSuperadminUserDropdown();
-                renderUserMgmtTable();
             }
         };
 
         window.handleLogout = async function() {
+            currentUserRole = null;
             if (auth) { try { await signOut(auth); } catch (e) { console.error("Firebase Logout Error", e); } }
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
             
@@ -606,6 +613,8 @@
             document.getElementById('nav-items-mahasiswa').classList.replace('flex', 'hidden');
             document.getElementById('nav-items-superadmin').classList.replace('flex', 'hidden');
             document.getElementById('nav-public-items').classList.replace('hidden', 'flex');
+            
+            document.getElementById('nav-btn-dashboard').classList.add('hidden');
             document.getElementById('nav-login-btn').classList.remove('hidden');
             
             showPublicSection('beranda');
@@ -725,6 +734,45 @@
             }
         };
 
+        window.saveSingleUser = async function(form) {
+            const id = document.getElementById('add-user-id').value.trim();
+            const name = document.getElementById('add-user-name').value.trim();
+            const role = document.getElementById('add-user-role').value;
+            const prodi = document.getElementById('add-user-prodi').value;
+            const email = document.getElementById('add-user-email').value.trim();
+            const password = document.getElementById('add-user-password').value;
+
+            Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                let finalUid = id;
+                if (db && auth) {
+                    const config = await getFirebaseConfig();
+                    const secondaryApp = initializeApp(config, "SecondaryApp" + Date.now());
+                    const secondaryAuth = getAuth(secondaryApp);
+
+                    const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+                    finalUid = userCred.user.uid;
+                    await signOut(secondaryAuth);
+
+                    const newUserProfile = { id, name, role, prodi, email, nama: name };
+                    await setDoc(doc(db, "users", finalUid), newUserProfile);
+                }
+
+                userDatabase.push({ id, name, role, prodi, email });
+                saveLocalData('sicapek_users', userDatabase);
+                
+                form.reset();
+                closeModalAddUser();
+                renderUserMgmtTable();
+                populateSuperadminUserDropdown();
+
+                Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} berhasil dibuat.` });
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Gagal', text: err.message });
+            }
+        };
+
         // ==========================================
         // UI RENDERING & HELPERS
         // ==========================================
@@ -801,8 +849,8 @@
             lucide.createIcons();
         };
 
-        function getBadgeTingkat(t) { return t === 'Nasional' ? `<span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 font-bold border border-teal-200">Nasional</span>` : t === 'Internasional' ? `<span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 font-bold border border-purple-200">Internasional</span>` : `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">Lokal / Wilayah</span>`; }
-        function getBadgeCapaian(c) { return c === 'Juara I' ? `<span class="px-2.5 py-1 rounded-full bg-lime-100 text-lime-800 font-bold border border-lime-300">Juara I</span>` : c === 'Juara II' ? `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-300">Juara II</span>` : `<span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">${c}</span>`; }
+        function getBadgeTingkat(t) { return t === 'Nasional' ? `<span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 font-bold border border-teal-200">Nasional</span>` : t === 'Internasional' ? `<span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 font-bold border border-purple-200">Internasional</span>` : `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">Lokal</span>`; }
+        function getBadgeCapaian(c) { return c === 'Juara I' ? `<span class="px-2.5 py-1 rounded-full bg-lime-100 text-lime-800 font-bold border border-lime-300">Juara I</span>` : c === 'Juara II' ? `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-300">Juara II</span>` : c === 'Juara III' ? `<span class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 font-bold border border-sky-300">Juara III</span>` : `<span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">${c}</span>`; }
 
         // ==========================================
         // UI INTERACTIONS & MODALS
@@ -811,6 +859,10 @@
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-public-landing').classList.add('active');
             document.querySelectorAll('.public-nav-btn').forEach(btn => btn.classList.remove('text-kemenkes-teal', 'font-bold', 'border-b-2', 'border-kemenkes-teal'));
+            
+            document.getElementById('nav-items-mahasiswa').classList.replace('flex', 'hidden');
+            document.getElementById('nav-items-superadmin').classList.replace('flex', 'hidden');
+
             if (section === 'beranda') {
                 document.getElementById('public-beranda').classList.remove('hidden'); document.getElementById('public-rekap').classList.add('hidden');
                 document.getElementById('nav-btn-beranda').classList.add('text-kemenkes-teal', 'font-bold', 'border-b-2', 'border-kemenkes-teal');

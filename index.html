@@ -139,7 +139,7 @@
 
                 <!-- DESKRIPSI & STATISTIK -->
                 <div class="lg:col-span-6 space-y-6">
-                  
+                    
                     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
                         Catat Prestasi, Abadikan Aksi, <br>
                         <span class="bg-gradient-to-r from-kemenkes-teal via-kemenkes-teal to-kemenkes-lime bg-clip-text text-transparent">Bikin UKM Sehat & Menyala!</span>
@@ -627,7 +627,6 @@
         let rekapPrestasiData = loadLocalData('sicapek_prestasi', []);
         let logbookData = loadLocalData('sicapek_logbook', []);
         let userDatabase = loadLocalData('sicapek_users', []);
-        let parsedCSVUsers = [];
 
         window.updateLandingStats = function() {
             if (!rekapPrestasiData) return;
@@ -1004,6 +1003,45 @@
             
             updateLandingStats();
             if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        // MANAJEMEN USER (SUPERADMIN)
+        window.saveSingleUser = async function(form) {
+            const id = document.getElementById('add-user-id').value.trim();
+            const name = document.getElementById('add-user-name').value.trim();
+            const role = document.getElementById('add-user-role').value;
+            const prodi = document.getElementById('add-user-prodi').value;
+            const email = document.getElementById('add-user-email').value.trim();
+            const password = document.getElementById('add-user-password').value;
+
+            Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                let finalUid = id;
+                if (db && auth) {
+                    const config = await getFirebaseConfig();
+                    const secondaryApp = initializeApp(config, "SecondaryApp" + Date.now());
+                    const secondaryAuth = getAuth(secondaryApp);
+
+                    const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+                    finalUid = userCred.user.uid;
+                    await signOut(secondaryAuth);
+
+                    const newUserProfile = { id, name, role, prodi, email, nama: name };
+                    await setDoc(doc(db, "users", finalUid), newUserProfile);
+                }
+
+                userDatabase.unshift({ id, name, role, prodi, email });
+                saveLocalData('sicapek_users', userDatabase);
+                
+                form.reset();
+                closeModalAddUser();
+                renderUserMgmtTable();
+
+                Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} berhasil dibuat.` });
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Gagal', text: err.message });
+            }
         };
 
         // ==========================================

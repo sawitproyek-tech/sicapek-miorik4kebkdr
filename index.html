@@ -139,7 +139,7 @@
 
                 <!-- DESKRIPSI & STATISTIK -->
                 <div class="lg:col-span-6 space-y-6">
-                    
+                  
                     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
                         Catat Prestasi, Abadikan Aksi, <br>
                         <span class="bg-gradient-to-r from-kemenkes-teal via-kemenkes-teal to-kemenkes-lime bg-clip-text text-transparent">Bikin UKM Sehat & Menyala!</span>
@@ -272,16 +272,32 @@
         </div>
 
         <div id="tab-submit-lomba" class="tab-content space-y-6">
-            <div class="max-w-2xl mx-auto glass-card p-8 rounded-2xl">
-                <h3 class="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><i data-lucide="trophy" class="w-5 h-5 text-kemenkes-lime-dark"></i> Submit Capaian Lomba / Karya</h3>
+            <div class="max-w-3xl mx-auto glass-card p-8 rounded-2xl">
+                <h3 class="text-lg font-extrabold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="trophy" class="w-5 h-5 text-kemenkes-lime-dark"></i> Submit Capaian Lomba / Karya</h3>
                 <form class="space-y-4" onsubmit="event.preventDefault(); submitLombaBaru(this, 'mahasiswa');">
+                    
+                    <!-- PENCARIAN & TAGGING ANGGOTA TIM (MAHASISWA) -->
+                    <div class="p-4 rounded-xl bg-teal-50/50 border border-teal-100 mb-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold uppercase text-teal-900">Anggota Tim (Termasuk Anda)</label>
+                            <button type="button" onclick="addTeamMemberField('mhs-team-members-container')" class="px-3 py-1 bg-kemenkes-teal hover:bg-kemenkes-teal-dark text-white rounded-lg font-bold text-[11px] transition flex items-center gap-1 shadow-sm">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Teman (+)
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Nama Anda otomatis terekam. Ketik nama teman untuk menambahkan jika kompetisi bersifat kelompok.</p>
+                        
+                        <div id="mhs-team-members-container" class="space-y-2">
+                            <!-- Field auto-fill pengguna login dibuat melalui JS -->
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Perlombaan</label><input id="form-lomba-nama" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal"></div>
                         <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penyelenggara</label><input id="form-lomba-penyelenggara" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Asal Prodi</label>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Asal Prodi (Default Tim)</label>
                             <select id="form-lomba-prodi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
                                 <option value="D3 Kebidanan">D3 Kebidanan</option><option value="STr Kebidanan">STr Kebidanan</option><option value="D3 Farmasi">D3 Farmasi</option><option value="STr Keperawatan">STr Keperawatan</option><option value="STr Teknologi Laboratorium Medis" selected>STr Teknologi Laboratorium Medis</option>
                             </select>
@@ -359,9 +375,10 @@
             </div>
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="overflow-x-auto">
+                    <!-- CRUD Tabel Admin -->
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-900 text-white font-bold uppercase tracking-wider">
-                            <tr><th class="p-4">Tgl Pelaksanaan</th><th class="p-4">Tgl Pengumuman</th><th class="p-4">Nama Mahasiswa</th><th class="p-4">Prodi</th><th class="p-4">Semester</th><th class="p-4">Nama Perlombaan</th><th class="p-4">Penyelenggara</th><th class="p-4">Tingkat</th><th class="p-4">Capaian</th><th class="p-4 text-center">Sertifikat</th><th class="p-4 text-center">Status Laporan</th></tr>
+                            <tr><th class="p-4">Pelaksanaan</th><th class="p-4">Mahasiswa (Tim)</th><th class="p-4">Prodi</th><th class="p-4">Perlombaan</th><th class="p-4">Penyelenggara</th><th class="p-4">Tingkat</th><th class="p-4">Capaian</th><th class="p-4 text-center">Sertifikat</th><th class="p-4 text-center">Aksi / CRUD</th></tr>
                         </thead>
                         <tbody id="superadmin-table-body" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
                     </table>
@@ -377,13 +394,13 @@
                     <div class="p-4 rounded-xl bg-purple-50/50 border border-purple-100 mb-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <label class="block text-xs font-bold uppercase text-purple-900">Pilih Mahasiswa / Tim (Pemilik Prestasi)</label>
-                            <button type="button" onclick="addTeamMemberField()" class="px-3 py-1 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold text-[11px] transition flex items-center gap-1 shadow-sm">
+                            <button type="button" onclick="addTeamMemberField('sa-team-members-container')" class="px-3 py-1 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold text-[11px] transition flex items-center gap-1 shadow-sm">
                                 <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Anggota (+)
                             </button>
                         </div>
                         <p class="text-[11px] text-slate-500">Ketik minimal 3 huruf nama mahasiswa untuk mencari. Klik tombol (+) jika lomba bersifat kelompok.</p>
                         
-                        <div id="team-members-container" class="space-y-2">
+                        <div id="sa-team-members-container" class="space-y-2">
                             <div class="flex items-center gap-2 relative student-row">
                                 <div class="relative flex-grow">
                                     <input type="text" placeholder="Ketik minimal 3 huruf nama mahasiswa..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
@@ -468,6 +485,41 @@
                     <input type="password" id="login-password" required placeholder="Masukkan kata sandi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-kemenkes-teal">
                 </div>
                 <button type="submit" class="w-full py-3 rounded-xl bg-kemenkes-teal hover:bg-kemenkes-teal-dark text-white font-bold text-xs transition shadow-md shadow-kemenkes-teal/20">Masuk Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT PRESTASI SUPERADMIN (CRUD) -->
+    <div id="modal-edit-prestasi" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-8">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2"><i data-lucide="edit-3" class="w-4 h-4 text-purple-700"></i> Edit Laporan Prestasi</h3>
+                <button onclick="closeModalEditPrestasi()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="form-edit-prestasi" onsubmit="event.preventDefault(); saveEditPrestasi();" class="space-y-3">
+                <input type="hidden" id="edit-prestasi-id">
+                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Mahasiswa (Tim)</label><input type="text" id="edit-prestasi-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Perlombaan</label><input type="text" id="edit-prestasi-lomba" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Penyelenggara</label><input type="text" id="edit-prestasi-penyelenggara" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Prodi</label>
+                        <select id="edit-prestasi-prodi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"><option value="D3 Kebidanan">D3 Kebidanan</option><option value="STr Kebidanan">STr Kebidanan</option><option value="D3 Farmasi">D3 Farmasi</option><option value="STr Keperawatan">STr Keperawatan</option><option value="STr Teknologi Laboratorium Medis">STr Teknologi Laboratorium Medis</option></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tingkat</label>
+                        <select id="edit-prestasi-tingkat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"><option value="Lokal">Lokal</option><option value="Nasional">Nasional</option><option value="Internasional">Internasional</option></select>
+                    </div>
+                </div>
+                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Capaian</label><input type="text" id="edit-prestasi-capaian" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Link Sertifikat</label><input type="url" id="edit-prestasi-cert" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeModalEditPrestasi()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-md">Simpan Perubahan</button>
+                </div>
             </form>
         </div>
     </div>
@@ -562,6 +614,9 @@
 
         let app, auth, db;
         let currentUserRole = null;
+        let currentUserName = '';
+        let currentUserProdi = '';
+        let currentUserId = '';
 
         // ==========================================
         // LOCAL STORAGE FALLBACK & STATE
@@ -574,9 +629,6 @@
         let userDatabase = loadLocalData('sicapek_users', []);
         let parsedCSVUsers = [];
 
-        // ==========================================
-        // FUNGSI UPDATE STATISTIK DINAMIS
-        // ==========================================
         window.updateLandingStats = function() {
             if (!rekapPrestasiData) return;
             
@@ -656,11 +708,13 @@
                     const userData = userDocSnap.data();
                     const actualRole = userData.role ? userData.role.toLowerCase() : 'mahasiswa';
                     const userName = userData.nama || userData.name || email.split('@')[0];
-                    const userSubtext = `${actualRole.toUpperCase()} • ${userData.prodi || 'UKM Portal'}`;
+                    const userProdi = userData.prodi || 'STr Teknologi Laboratorium Medis';
+                    const userSubtext = `${actualRole.toUpperCase()} • ${userProdi}`;
+                    const userId = userData.id || userCredential.user.uid;
                     
                     closeLoginModal();
                     Swal.fire({ icon: 'success', title: 'Berhasil Masuk!', text: `Selamat datang, ${userName}!`, timer: 2000, showConfirmButton: false });
-                    setupUserDashboard(actualRole, userName, userSubtext);
+                    setupUserDashboard(actualRole, userName, userSubtext, userProdi, userId);
                 } else {
                     throw new Error("Data profil tidak ditemukan.");
                 }
@@ -669,8 +723,12 @@
             }
         };
 
-        window.setupUserDashboard = function(role, name, subtext) {
+        window.setupUserDashboard = function(role, name, subtext, prodi, uid) {
             currentUserRole = role;
+            currentUserName = name;
+            currentUserProdi = prodi || '';
+            currentUserId = uid || '';
+
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
             
             document.getElementById('nav-public-items').classList.remove('hidden');
@@ -684,7 +742,27 @@
             document.getElementById('user-display-name').innerText = name;
             document.getElementById('user-display-role').innerText = subtext;
 
+            if (role === 'mahasiswa') {
+                setupMahasiswaTeamUI(name, prodi);
+                document.getElementById('form-lomba-prodi').value = currentUserProdi;
+            }
+
             returnToDashboard();
+        };
+
+        window.setupMahasiswaTeamUI = function(name, prodi) {
+            const container = document.getElementById('mhs-team-members-container');
+            if(container) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-2 relative student-row">
+                        <div class="relative flex-grow">
+                            <input type="text" value="${name}" readonly class="student-search-input w-full bg-teal-50 border border-teal-200 rounded-xl px-4 py-2.5 text-xs font-bold text-teal-800 cursor-not-allowed shadow-sm" title="Nama Anda otomatis ditambahkan">
+                            <input type="hidden" class="student-id-hidden" value="${currentUserId}">
+                        </div>
+                        <input type="text" readonly value="${prodi}" class="student-prodi-display w-48 bg-teal-50 border border-teal-200 rounded-xl px-3 py-2.5 text-xs font-bold text-teal-700 cursor-not-allowed hidden sm:block">
+                    </div>
+                `;
+            }
         };
 
         window.returnToDashboard = function() {
@@ -708,6 +786,7 @@
 
         window.handleLogout = async function() {
             currentUserRole = null;
+            currentUserName = '';
             if (auth) { try { await signOut(auth); } catch (e) { console.error("Firebase Logout Error", e); } }
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
             
@@ -765,7 +844,7 @@
                     prodiDisplay.value = mhs.prodi;
                     suggestionBox.classList.add('hidden');
                     
-                    if (row.parentElement.firstElementChild === row) {
+                    if (row.parentElement.firstElementChild === row && currentUserRole === 'superadmin') {
                         document.getElementById('sa-form-lomba-prodi').value = mhs.prodi;
                     }
                 };
@@ -774,13 +853,13 @@
             suggestionBox.classList.remove('hidden');
         };
 
-        window.addTeamMemberField = function() {
-            const container = document.getElementById('team-members-container');
+        window.addTeamMemberField = function(containerId) {
+            const container = document.getElementById(containerId || 'team-members-container');
             const newRow = document.createElement('div');
             newRow.className = "flex items-center gap-2 relative student-row pt-1";
             newRow.innerHTML = `
                 <div class="relative flex-grow">
-                    <input type="text" placeholder="Ketik minimal 3 huruf nama anggota..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
+                    <input type="text" placeholder="Ketik minimal 3 huruf nama anggota..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
                     <input type="hidden" class="student-id-hidden">
                     <div class="student-suggestions hidden absolute left-0 top-full mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-40 overflow-y-auto"></div>
                 </div>
@@ -793,68 +872,81 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
-        window.saveLogbook = async function() {
-            const id = document.getElementById('logbook-id').value;
-            const payload = { 
-                date: document.getElementById('logbook-date').value, 
-                topic: document.getElementById('logbook-topic').value, 
-                desc: document.getElementById('logbook-desc').value, 
-                status: 'Pending' 
-            };
-
-            try {
-                if (db) {
-                    if (id) {
-                        await updateDoc(doc(db, "logbooks", id), payload);
-                        const index = logbookData.findIndex(d => d.id === id);
-                        if (index !== -1) logbookData[index] = { ...logbookData[index], ...payload };
-                    } else {
-                        const docRef = await addDoc(collection(db, "logbooks"), payload);
-                        logbookData.unshift({ id: docRef.id, ...payload });
-                    }
-                } else throw new Error("DB Offline");
-            } catch (err) {
-                if (id) {
-                    const item = logbookData.find(d => d.id == id);
-                    if (item) Object.assign(item, payload);
-                } else {
-                    logbookData.unshift({ id: Date.now().toString(), ...payload });
-                }
-            }
-
-            saveLocalData('sicapek_logbook', logbookData);
-            closeLogbookModal();
-            renderLogbookTable();
-        };
-
-        window.deleteLogbook = async function(id) {
+        // SUPERADMIN CRUD PRESTASI
+        window.deletePrestasi = async function(id) {
             Swal.fire({
-                title: 'Hapus Logbook?', icon: 'warning', showCancelButton: true,
-                confirmButtonColor: '#f43f5e', confirmButtonText: 'Ya, Hapus!'
+                title: 'Hapus Laporan Prestasi?', text: 'Data yang dihapus tidak bisa dikembalikan!', icon: 'warning', 
+                showCancelButton: true, confirmButtonColor: '#f43f5e', confirmButtonText: 'Ya, Hapus Data'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    if (db) { try { await deleteDoc(doc(db, "logbooks", id)); } catch (e) {} }
-                    logbookData = logbookData.filter(d => d.id !== id);
-                    saveLocalData('sicapek_logbook', logbookData);
-                    renderLogbookTable();
+                    if (db) { try { await deleteDoc(doc(db, "prestasi", id)); } catch (e) {} }
+                    rekapPrestasiData = rekapPrestasiData.filter(d => d.id !== id);
+                    saveLocalData('sicapek_prestasi', rekapPrestasiData);
+                    renderRekapTable(rekapPrestasiData);
+                    renderSuperadminTable(rekapPrestasiData);
+                    updateLandingStats();
                     Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false });
                 }
             });
         };
 
+        window.openModalEditPrestasi = () => document.getElementById('modal-edit-prestasi').classList.remove('hidden');
+        window.closeModalEditPrestasi = () => document.getElementById('modal-edit-prestasi').classList.add('hidden');
+
+        window.editPrestasi = function(id) {
+            const item = rekapPrestasiData.find(d => d.id == id);
+            if (!item) return;
+            document.getElementById('edit-prestasi-id').value = item.id;
+            document.getElementById('edit-prestasi-name').value = item.name;
+            document.getElementById('edit-prestasi-lomba').value = item.lomba;
+            document.getElementById('edit-prestasi-penyelenggara').value = item.penyelenggara;
+            document.getElementById('edit-prestasi-prodi').value = item.prodi;
+            document.getElementById('edit-prestasi-tingkat').value = item.tingkat;
+            document.getElementById('edit-prestasi-capaian').value = item.capaian;
+            document.getElementById('edit-prestasi-cert').value = (item.certificateUrl && item.certificateUrl !== '#') ? item.certificateUrl : '';
+            openModalEditPrestasi();
+        };
+
+        window.saveEditPrestasi = async function() {
+            const id = document.getElementById('edit-prestasi-id').value;
+            const updatedPayload = {
+                name: document.getElementById('edit-prestasi-name').value.trim(),
+                lomba: document.getElementById('edit-prestasi-lomba').value.trim(),
+                penyelenggara: document.getElementById('edit-prestasi-penyelenggara').value.trim(),
+                prodi: document.getElementById('edit-prestasi-prodi').value,
+                tingkat: document.getElementById('edit-prestasi-tingkat').value,
+                capaian: document.getElementById('edit-prestasi-capaian').value.trim(),
+                certificateUrl: document.getElementById('edit-prestasi-cert').value.trim() || '#'
+            };
+
+            try {
+                if (db) { await updateDoc(doc(db, "prestasi", id), updatedPayload); }
+                const idx = rekapPrestasiData.findIndex(d => d.id === id);
+                if (idx !== -1) {
+                    rekapPrestasiData[idx] = { ...rekapPrestasiData[idx], ...updatedPayload };
+                    saveLocalData('sicapek_prestasi', rekapPrestasiData);
+                    renderRekapTable(rekapPrestasiData);
+                    renderSuperadminTable(rekapPrestasiData);
+                    updateLandingStats();
+                    closeModalEditPrestasi();
+                    Swal.fire({ icon: 'success', title: 'Diperbarui!', timer: 1500, showConfirmButton: false });
+                }
+            } catch(e) { Swal.fire('Error', 'Gagal memperbarui data', 'error'); }
+        };
+
+        // SAVE NEW PRESTASI (MHS & ADMIN)
         window.submitLombaBaru = async function(form, sourceRole) {
             const isSuper = sourceRole === 'superadmin';
             const prefix = isSuper ? 'sa-form-' : 'form-';
+            const containerId = isSuper ? 'sa-team-members-container' : 'mhs-team-members-container';
             
             let namaMahasiswa = 'Nama User';
-            if (isSuper) {
-                const nameInputs = document.querySelectorAll('#team-members-container .student-search-input');
-                let namesArray = [];
-                nameInputs.forEach(input => {
-                    if(input.value.trim()) namesArray.push(input.value.trim());
-                });
-                namaMahasiswa = namesArray.length > 0 ? namesArray.join(', ') : 'Mahasiswa Manual';
-            }
+            const nameInputs = document.querySelectorAll(`#${containerId} .student-search-input`);
+            let namesArray = [];
+            nameInputs.forEach(input => {
+                if(input.value.trim()) namesArray.push(input.value.trim());
+            });
+            namaMahasiswa = namesArray.length > 0 ? namesArray.join(', ') : (isSuper ? 'Mahasiswa Manual' : currentUserName);
 
             const rawPelaksanaan = document.getElementById(`${prefix}lomba-tgl-pelaksanaan`).value;
             const rawPengumuman = document.getElementById(`${prefix}lomba-tgl-pengumuman`).value;
@@ -862,8 +954,6 @@
 
             const selectCapaian = document.getElementById(`${prefix}lomba-capaian-select`).value;
             const finalCapaian = selectCapaian === 'CUSTOM' ? document.getElementById(`${prefix}lomba-custom-award`).value.trim() : selectCapaian;
-            
-            // Ambil link sertifikat Google Drive
             const certLink = document.getElementById(`${prefix}lomba-cert`) ? document.getElementById(`${prefix}lomba-cert`).value.trim() : '#';
 
             const newPrestasi = {
@@ -890,7 +980,7 @@
             form.reset();
 
             if (isSuper) {
-                document.getElementById('team-members-container').innerHTML = `
+                document.getElementById('sa-team-members-container').innerHTML = `
                     <div class="flex items-center gap-2 relative student-row">
                         <div class="relative flex-grow">
                             <input type="text" placeholder="Ketik minimal 3 huruf nama mahasiswa..." oninput="handleStudentSearch(this)" class="student-search-input w-full bg-white border border-purple-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-purple-600 shadow-sm" required>
@@ -904,64 +994,16 @@
                 switchSuperadminTab('rekap-list');
                 renderSuperadminTable(rekapPrestasiData);
             } else {
+                setupMahasiswaTeamUI(currentUserName, currentUserProdi);
+                document.getElementById('form-lomba-prodi').value = currentUserProdi;
                 toggleCustomAwardInput('form-lomba-capaian-select', 'custom-award-container', 'form-lomba-custom-award');
                 renderRekapTable(rekapPrestasiData);
+                renderSuperadminTable(rekapPrestasiData);
                 switchMahasiswaTab('logbook');
             }
             
-            // Panggil update statistik
             updateLandingStats();
-            
             if (typeof lucide !== 'undefined') lucide.createIcons();
-        };
-
-        window.approveLogbook = async function(id) {
-            const item = logbookData.find(d => d.id == id);
-            if (item) {
-                item.status = 'Approved';
-                if (db) { try { await updateDoc(doc(db, "logbooks", id), { status: 'Approved' }); } catch(e){} }
-                saveLocalData('sicapek_logbook', logbookData);
-                Swal.fire({ icon: 'success', title: 'Disetujui!', timer: 1500, showConfirmButton: false });
-                renderPembimbingTable();
-            }
-        };
-
-        window.saveSingleUser = async function(form) {
-            const id = document.getElementById('add-user-id').value.trim();
-            const name = document.getElementById('add-user-name').value.trim();
-            const role = document.getElementById('add-user-role').value;
-            const prodi = document.getElementById('add-user-prodi').value;
-            const email = document.getElementById('add-user-email').value.trim();
-            const password = document.getElementById('add-user-password').value;
-
-            Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            try {
-                let finalUid = id;
-                if (db && auth) {
-                    const config = await getFirebaseConfig();
-                    const secondaryApp = initializeApp(config, "SecondaryApp" + Date.now());
-                    const secondaryAuth = getAuth(secondaryApp);
-
-                    const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-                    finalUid = userCred.user.uid;
-                    await signOut(secondaryAuth);
-
-                    const newUserProfile = { id, name, role, prodi, email, nama: name };
-                    await setDoc(doc(db, "users", finalUid), newUserProfile);
-                }
-
-                userDatabase.push({ id, name, role, prodi, email });
-                saveLocalData('sicapek_users', userDatabase);
-                
-                form.reset();
-                closeModalAddUser();
-                renderUserMgmtTable();
-
-                Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} berhasil dibuat.` });
-            } catch (err) {
-                Swal.fire({ icon: 'error', title: 'Gagal', text: err.message });
-            }
         };
 
         // ==========================================
@@ -991,18 +1033,23 @@
             const tbody = document.getElementById('superadmin-table-body');
             document.getElementById('superadmin-total-count').innerText = dataList ? dataList.length : 0;
             tbody.innerHTML = '';
-            if (!dataList || dataList.length === 0) return tbody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-slate-400 font-semibold">Tidak ada data.</td></tr>`;
+            if (!dataList || dataList.length === 0) return tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400 font-semibold">Tidak ada data.</td></tr>`;
             
             dataList.forEach(item => {
-                const certLinkHtml = item.certificateUrl && item.certificateUrl !== '#' ? `<a href="${item.certificateUrl}" target="_blank" class="text-purple-700 font-bold hover:underline flex items-center justify-center gap-1"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Link Drive</a>` : `<span class="text-slate-400 italic text-[10px]">Tidak ada</span>`;
+                const certLinkHtml = item.certificateUrl && item.certificateUrl !== '#' ? `<a href="${item.certificateUrl}" target="_blank" class="text-purple-700 font-bold hover:underline flex items-center justify-center gap-1"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> Lihat</a>` : `<span class="text-slate-400 italic text-[10px]">-</span>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50">
-                        <td class="p-4 text-slate-500">${item.tglPelaksanaan}</td><td class="p-4 text-slate-500">${item.tglPengumuman}</td>
-                        <td class="p-4 font-bold">${item.name}</td><td class="p-4 text-kemenkes-teal-dark">${item.prodi}</td>
-                        <td class="p-4">${item.semester}</td><td class="p-4">${item.lomba}</td><td class="p-4">${item.penyelenggara}</td>
+                        <td class="p-4 text-slate-500">${item.tglPelaksanaan}</td>
+                        <td class="p-4 font-bold text-slate-800">${item.name}</td><td class="p-4 text-kemenkes-teal-dark font-semibold">${item.prodi}</td>
+                        <td class="p-4 font-semibold">${item.lomba}</td><td class="p-4">${item.penyelenggara}</td>
                         <td class="p-4">${getBadgeTingkat(item.tingkat)}</td><td class="p-4">${getBadgeCapaian(item.capaian)}</td>
                         <td class="p-4 text-center">${certLinkHtml}</td>
-                        <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Terverifikasi</span></td>
+                        <td class="p-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="editPrestasi('${item.id}')" class="p-1.5 bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition" title="Edit Data"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                <button onclick="deletePrestasi('${item.id}')" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition" title="Hapus Data"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </td>
                     </tr>`;
             });
             lucide.createIcons();
@@ -1047,7 +1094,7 @@
         function getBadgeCapaian(c) { return c === 'Juara I' ? `<span class="px-2.5 py-1 rounded-full bg-lime-100 text-lime-800 font-bold border border-lime-300">Juara I</span>` : c === 'Juara II' ? `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-300">Juara II</span>` : c === 'Juara III' ? `<span class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 font-bold border border-sky-300">Juara III</span>` : `<span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">${c}</span>`; }
 
         // ==========================================
-        // UI INTERACTIONS & MODALS
+        // UI INTERACTIONS & LAINNYA
         // ==========================================
         window.showPublicSection = function(section) {
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
@@ -1097,6 +1144,32 @@
             document.getElementById('logbook-topic').value = item.topic;
             document.getElementById('logbook-desc').value = item.desc;
             document.getElementById('modal-logbook').classList.remove('hidden');
+        };
+        window.saveLogbook = async function() {
+            const id = document.getElementById('logbook-id').value;
+            const payload = { date: document.getElementById('logbook-date').value, topic: document.getElementById('logbook-topic').value, desc: document.getElementById('logbook-desc').value, status: 'Pending' };
+            try {
+                if (db) {
+                    if (id) { await updateDoc(doc(db, "logbooks", id), payload); const index = logbookData.findIndex(d => d.id === id); if (index !== -1) logbookData[index] = { ...logbookData[index], ...payload }; } 
+                    else { const docRef = await addDoc(collection(db, "logbooks"), payload); logbookData.unshift({ id: docRef.id, ...payload }); }
+                } else throw new Error("DB Offline");
+            } catch (err) {
+                if (id) { const item = logbookData.find(d => d.id == id); if (item) Object.assign(item, payload); } 
+                else { logbookData.unshift({ id: Date.now().toString(), ...payload }); }
+            }
+            saveLocalData('sicapek_logbook', logbookData);
+            closeLogbookModal();
+            renderLogbookTable();
+        };
+        window.deleteLogbook = async function(id) {
+            Swal.fire({ title: 'Hapus Logbook?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#f43f5e', confirmButtonText: 'Ya, Hapus!' }).then(async (result) => {
+                if (result.isConfirmed) {
+                    if (db) { try { await deleteDoc(doc(db, "logbooks", id)); } catch (e) {} }
+                    logbookData = logbookData.filter(d => d.id !== id);
+                    saveLocalData('sicapek_logbook', logbookData); renderLogbookTable();
+                    Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false });
+                }
+            });
         };
 
         window.toggleCustomAwardInput = function(selectId, containerId, customInputId) {

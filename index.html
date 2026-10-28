@@ -149,12 +149,27 @@
                     <p class="text-slate-600 text-sm leading-relaxed font-normal">
                         SICAPEK (Sistem Informasi Capaian, Prestasi, dan Kegiatan Mahasiswa) adalah platform terpadu pendataan keaktifan mahasiswa dalam ajang kompetisi serta rekapitulasi prestasi UKM secara terstruktur, akuntabel, dan transparan.
                     </p>
+                    
+                    <!-- KOTAK STATISTIK DINAMIS -->
                     <div class="grid grid-cols-2 gap-3 pt-2">
-                        <div class="glass-card p-4 rounded-2xl"><div class="text-2xl font-black text-kemenkes-teal">48</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Total Prestasi Juara</div></div>
-                        <div class="glass-card p-4 rounded-2xl"><div class="text-2xl font-black text-kemenkes-lime-dark">120+</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Partisipasi Lomba</div></div>
-                        <div class="glass-card p-4 rounded-2xl"><div class="text-2xl font-black text-slate-700">15</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat Internasional</div></div>
-                        <div class="glass-card p-4 rounded-2xl"><div class="text-2xl font-black text-kemenkes-teal-dark">85</div><div class="text-[11px] text-slate-500 font-semibold mt-0.5">Logbook Kegiatan</div></div>
+                        <div class="glass-card p-4 rounded-2xl">
+                            <div id="stat-total-prestasi" class="text-2xl font-black text-kemenkes-teal">0</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Total Prestasi Juara</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-2xl">
+                            <div id="stat-tingkat-internasional" class="text-2xl font-black text-purple-700">0</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat Internasional</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-2xl">
+                            <div id="stat-tingkat-nasional" class="text-2xl font-black text-kemenkes-lime-dark">0</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat Nasional</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-2xl">
+                            <div id="stat-tingkat-lokal" class="text-2xl font-black text-slate-700">0</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat Lokal / Wilayah</div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -520,6 +535,28 @@
         let userDatabase = loadLocalData('sicapek_users', []);
         let parsedCSVUsers = [];
 
+        // ==========================================
+        // FUNGSI UPDATE STATISTIK DINAMIS
+        // ==========================================
+        window.updateLandingStats = function() {
+            if (!rekapPrestasiData) return;
+            
+            const total = rekapPrestasiData.length;
+            const internasional = rekapPrestasiData.filter(item => item.tingkat === 'Internasional').length;
+            const nasional = rekapPrestasiData.filter(item => item.tingkat === 'Nasional').length;
+            const lokal = rekapPrestasiData.filter(item => item.tingkat === 'Lokal' || item.tingkat === 'Lokal / Wilayah').length;
+
+            const elTotal = document.getElementById('stat-total-prestasi');
+            const elInt = document.getElementById('stat-tingkat-internasional');
+            const elNas = document.getElementById('stat-tingkat-nasional');
+            const elLok = document.getElementById('stat-tingkat-lokal');
+
+            if (elTotal) elTotal.innerText = total;
+            if (elInt) elInt.innerText = internasional;
+            if (elNas) elNas.innerText = nasional;
+            if (elLok) elLok.innerText = lokal;
+        };
+
         async function initApp() {
             const config = await getFirebaseConfig();
             if (config) {
@@ -532,6 +569,7 @@
                 renderRekapTable(rekapPrestasiData);
                 renderSuperadminTable(rekapPrestasiData);
                 renderUserMgmtTable();
+                updateLandingStats();
             }
         }
 
@@ -556,6 +594,7 @@
             renderRekapTable(rekapPrestasiData);
             renderSuperadminTable(rekapPrestasiData);
             renderUserMgmtTable();
+            updateLandingStats();
         }
 
         // ==========================================
@@ -830,6 +869,10 @@
                 renderRekapTable(rekapPrestasiData);
                 switchMahasiswaTab('logbook');
             }
+            
+            // Panggil update statistik
+            updateLandingStats();
+            
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 

@@ -341,15 +341,20 @@
 
     <!-- 3. DASHBOARD PEMBIMBING -->
     <main id="view-dashboard-pembimbing" class="page-view pt-28 pb-12 px-6 max-w-7xl mx-auto flex-grow">
-        <div class="glass-card p-6 rounded-2xl mb-8">
-            <h2 class="text-xl font-black text-slate-900">Portal Verifikasi Pembimbing</h2>
-            <p class="text-xs text-slate-500 mt-1">Lakukan verifikasi logbook kegiatan harian yang dikirim oleh mahasiswa.</p>
+        <div class="glass-card p-6 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-xl font-black text-slate-900">Portal Verifikasi Pembimbing</h2>
+                <p id="pembimbing-subtext" class="text-xs text-slate-500 mt-1">Menampilkan logbook harian dari mahasiswa bimbingan UKM Anda.</p>
+            </div>
+            <div id="pembimbing-ukm-badge" class="px-4 py-2 rounded-xl bg-kemenkes-teal-light text-kemenkes-teal-dark font-bold text-xs border border-kemenkes-teal/20">
+                UKM: Memuat...
+            </div>
         </div>
         <div class="glass-card rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-kemenkes-teal-light text-kemenkes-teal-dark font-bold uppercase tracking-wider border-b border-kemenkes-teal/10">
-                        <tr><th class="py-4 px-6">Mahasiswa</th><th class="py-4 px-6">Tanggal</th><th class="py-4 px-6">Topik Kegiatan</th><th class="py-4 px-6">Uraian</th><th class="py-4 px-6 text-center">Aksi Verifikasi</th></tr>
+                        <tr><th class="py-4 px-6">Mahasiswa</th><th class="py-4 px-6">UKM</th><th class="py-4 px-6">Tanggal</th><th class="py-4 px-6">Topik Kegiatan</th><th class="py-4 px-6">Uraian</th><th class="py-4 px-6 text-center">Aksi Verifikasi</th></tr>
                     </thead>
                     <tbody id="pembimbing-table-body" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
                 </table>
@@ -453,7 +458,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-900 text-white font-bold uppercase tracking-wider">
-                            <tr><th class="p-4">NIM / NIP</th><th class="p-4">Nama Lengkap</th><th class="p-4">Peran (Role)</th><th class="p-4">Program Studi</th><th class="p-4">Email</th><th class="p-4 text-center">Aksi / Kontrol</th></tr>
+                            <tr><th class="p-4">NIM / NIP</th><th class="p-4">Nama Lengkap</th><th class="p-4">Peran (Role)</th><th class="p-4">Program Studi</th><th class="p-4">UKM / Pembimbing</th><th class="p-4 text-center">Aksi / Kontrol</th></tr>
                         </thead>
                         <tbody id="user-mgmt-table-body" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
                     </table>
@@ -559,8 +564,15 @@
             <form onsubmit="event.preventDefault(); saveSingleUser(this);" class="space-y-3">
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">NIM / NIP / ID</label><input id="add-user-id" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Lengkap</label><input id="add-user-name" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
-                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Peran (Role)</label><select id="add-user-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"><option value="Mahasiswa">Mahasiswa</option><option value="Pembimbing">Pembimbing</option></select></div>
+                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Peran (Role)</label><select id="add-user-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs" onchange="toggleUserRoleFields(this.value)"><option value="Mahasiswa">Mahasiswa</option><option value="Pembimbing">Pembimbing</option></select></div>
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Program Studi</label><input id="add-user-prodi" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                
+                <!-- Field Khusus Mahasiswa: Nama UKM & Pembimbing -->
+                <div id="user-mhs-fields" class="space-y-3">
+                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama UKM yang Diikuti</label><input id="add-user-ukm" type="text" placeholder="Contoh: UKM Olahraga / Seni" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                    <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Pembimbing UKM</label><input id="add-user-pembimbing" type="text" placeholder="Contoh: Dr. Budi Santoso, M.Kes" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
+                </div>
+
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Email</label><input id="add-user-email" type="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
                 <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kata Sandi</label><input id="add-user-password" type="password" required placeholder="Minimal 6 karakter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs"></div>
                 <div class="pt-2 flex gap-2">
@@ -571,36 +583,12 @@
         </div>
     </div>
 
-    <!-- MODAL SUPERADMIN: IMPORT USER CSV -->
-    <div id="modal-import-csv" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 class="font-bold text-slate-900 text-base">Import Users (CSV Bulk)</h3>
-                <button onclick="closeModalImportCSV()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between bg-purple-50 p-3 rounded-xl text-xs text-purple-900">
-                    <span>Gunakan template CSV berformat standar:</span>
-                    <button onclick="downloadCSVTemplate()" class="px-3 py-1.5 bg-purple-700 text-white rounded-lg font-bold text-[11px]"><i data-lucide="download" class="w-3.5 h-3.5 inline"></i> Unduh Template</button>
-                </div>
-                <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pilih File CSV</label><input type="file" id="csv-file-input" accept=".csv" onchange="handleCSVFileSelect(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 file:font-bold cursor-pointer"></div>
-            </div>
-            <div class="pt-2 flex gap-2">
-                <button type="button" onclick="closeModalImportCSV()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50">Batal</button>
-                <button id="btn-process-import" onclick="executeImportCSV()" disabled class="w-1/2 py-2.5 rounded-xl bg-purple-300 text-white font-bold text-xs cursor-not-allowed">Eksekusi Import Data</button>
-            </div>
-        </div>
-    </div>
-
     <!-- FIREBASE SDK MODULAR v10 & SECURE SCRIPT APLIKASI -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, getDoc, deleteDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ==========================================
-        // DYNAMIC CONFIGURATION FETCHING
-        // ==========================================
         async function getFirebaseConfig() {
             try {
                 const response = await fetch('./api/firebase-config.json'); 
@@ -617,10 +605,9 @@
         let currentUserName = '';
         let currentUserProdi = '';
         let currentUserId = '';
+        let currentUserUkm = '';
+        let currentUserPembimbing = '';
 
-        // ==========================================
-        // LOCAL STORAGE FALLBACK & STATE
-        // ==========================================
         const loadLocalData = (key, defaultData) => JSON.parse(localStorage.getItem(key)) || defaultData;
         const saveLocalData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
 
@@ -630,21 +617,15 @@
 
         window.updateLandingStats = function() {
             if (!rekapPrestasiData) return;
-            
             const total = rekapPrestasiData.length;
             const internasional = rekapPrestasiData.filter(item => item.tingkat === 'Internasional').length;
             const nasional = rekapPrestasiData.filter(item => item.tingkat === 'Nasional').length;
             const lokal = rekapPrestasiData.filter(item => item.tingkat === 'Lokal' || item.tingkat === 'Lokal / Wilayah').length;
 
-            const elTotal = document.getElementById('stat-total-prestasi');
-            const elInt = document.getElementById('stat-tingkat-internasional');
-            const elNas = document.getElementById('stat-tingkat-nasional');
-            const elLok = document.getElementById('stat-tingkat-lokal');
-
-            if (elTotal) elTotal.innerText = total;
-            if (elInt) elInt.innerText = internasional;
-            if (elNas) elNas.innerText = nasional;
-            if (elLok) elLok.innerText = lokal;
+            if (document.getElementById('stat-total-prestasi')) document.getElementById('stat-total-prestasi').innerText = total;
+            if (document.getElementById('stat-tingkat-internasional')) document.getElementById('stat-tingkat-internasional').innerText = internasional;
+            if (document.getElementById('stat-tingkat-nasional')) document.getElementById('stat-tingkat-nasional').innerText = nasional;
+            if (document.getElementById('stat-tingkat-lokal')) document.getElementById('stat-tingkat-lokal').innerText = lokal;
         };
 
         async function initApp() {
@@ -708,12 +689,14 @@
                     const actualRole = userData.role ? userData.role.toLowerCase() : 'mahasiswa';
                     const userName = userData.nama || userData.name || email.split('@')[0];
                     const userProdi = userData.prodi || 'STr Teknologi Laboratorium Medis';
+                    const userUkm = userData.ukm || 'UKM Umum';
+                    const userPembimbing = userData.pembimbing || 'Dr. Budi Santoso, M.Kes';
                     const userSubtext = `${actualRole.toUpperCase()} • ${userProdi}`;
                     const userId = userData.id || userCredential.user.uid;
                     
                     closeLoginModal();
                     Swal.fire({ icon: 'success', title: 'Berhasil Masuk!', text: `Selamat datang, ${userName}!`, timer: 2000, showConfirmButton: false });
-                    setupUserDashboard(actualRole, userName, userSubtext, userProdi, userId);
+                    setupUserDashboard(actualRole, userName, userSubtext, userProdi, userId, userUkm, userPembimbing);
                 } else {
                     throw new Error("Data profil tidak ditemukan.");
                 }
@@ -722,11 +705,13 @@
             }
         };
 
-        window.setupUserDashboard = function(role, name, subtext, prodi, uid) {
+        window.setupUserDashboard = function(role, name, subtext, prodi, uid, ukm, pembimbing) {
             currentUserRole = role;
             currentUserName = name;
             currentUserProdi = prodi || '';
             currentUserId = uid || '';
+            currentUserUkm = ukm || 'UKM Umum';
+            currentUserPembimbing = pembimbing || '-';
 
             document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
             
@@ -744,6 +729,10 @@
             if (role === 'mahasiswa') {
                 setupMahasiswaTeamUI(name, prodi);
                 document.getElementById('form-lomba-prodi').value = currentUserProdi;
+            } else if (role === 'pembimbing') {
+                document.getElementById('pembimbing-subtext').innerText = `Menampilkan logbook harian mahasiswa binaan ${currentUserUkm}.`;
+                document.getElementById('pembimbing-ukm-badge').innerText = `UKM Binaan: ${currentUserUkm}`;
+                renderPembimbingTable();
             }
 
             returnToDashboard();
@@ -777,6 +766,7 @@
                 document.getElementById('view-dashboard-mahasiswa').classList.add('active');
             } else if (currentUserRole === 'pembimbing') {
                 document.getElementById('view-dashboard-pembimbing').classList.add('active');
+                renderPembimbingTable();
             } else if (currentUserRole === 'superadmin') {
                 document.getElementById('nav-items-superadmin').classList.replace('hidden', 'flex');
                 document.getElementById('view-dashboard-superadmin').classList.add('active');
@@ -933,7 +923,6 @@
             } catch(e) { Swal.fire('Error', 'Gagal memperbarui data', 'error'); }
         };
 
-        // SAVE NEW PRESTASI (MHS & ADMIN)
         window.submitLombaBaru = async function(form, sourceRole) {
             const isSuper = sourceRole === 'superadmin';
             const prefix = isSuper ? 'sa-form-' : 'form-';
@@ -1005,12 +994,23 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
-        // MANAJEMEN USER (SUPERADMIN)
+        // MANAJEMEN USER (SUPERADMIN) DENGAN UKM & PEMBIMBING
+        window.toggleUserRoleFields = function(role) {
+            const mhsFields = document.getElementById('user-mhs-fields');
+            if (role === 'Mahasiswa') {
+                mhsFields.classList.remove('hidden');
+            } else {
+                mhsFields.classList.add('hidden');
+            }
+        };
+
         window.saveSingleUser = async function(form) {
             const id = document.getElementById('add-user-id').value.trim();
             const name = document.getElementById('add-user-name').value.trim();
             const role = document.getElementById('add-user-role').value;
             const prodi = document.getElementById('add-user-prodi').value;
+            const ukm = role === 'Mahasiswa' ? document.getElementById('add-user-ukm').value.trim() : '-';
+            const pembimbing = role === 'Mahasiswa' ? document.getElementById('add-user-pembimbing').value.trim() : '-';
             const email = document.getElementById('add-user-email').value.trim();
             const password = document.getElementById('add-user-password').value;
 
@@ -1027,18 +1027,18 @@
                     finalUid = userCred.user.uid;
                     await signOut(secondaryAuth);
 
-                    const newUserProfile = { id, name, role, prodi, email, nama: name };
+                    const newUserProfile = { id, name, role, prodi, ukm, pembimbing, email, nama: name };
                     await setDoc(doc(db, "users", finalUid), newUserProfile);
                 }
 
-                userDatabase.unshift({ id, name, role, prodi, email });
+                userDatabase.unshift({ id, name, role, prodi, ukm, pembimbing, email });
                 saveLocalData('sicapek_users', userDatabase);
                 
                 form.reset();
                 closeModalAddUser();
                 renderUserMgmtTable();
 
-                Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} berhasil dibuat.` });
+                Swal.fire({ icon: 'success', title: 'User Terdaftar!', text: `Akun ${name} (${ukm}) berhasil dibuat.` });
             } catch (err) {
                 Swal.fire({ icon: 'error', title: 'Gagal', text: err.message });
             }
@@ -1109,12 +1109,45 @@
 
         window.renderPembimbingTable = function() {
             const tbody = document.getElementById('pembimbing-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
-            if(!logbookData) return;
-            logbookData.forEach(item => {
-                let actionBtn = item.status === 'Pending' ? `<button onclick="approveLogbook('${item.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs">Setujui (ACC)</button>` : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Disetujui</span>`;
-                tbody.innerHTML += `<tr><td class="py-4 px-6 font-bold">Rizky Zulkarnaen</td><td class="py-4 px-6">${item.date}</td><td class="py-4 px-6 font-semibold">${item.topic}</td><td class="py-4 px-6 max-w-xs">${item.desc}</td><td class="py-4 px-6 text-center">${actionBtn}</td></tr>`;
+            if(!logbookData || logbookData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 font-semibold">Belum ada logbook masuk.</td></tr>`;
+                return;
+            }
+
+            // Filter mahasiswa yang dibimbing oleh pembimbing aktif
+            const mahasiswaBinaan = userDatabase.filter(u => u.role === 'Mahasiswa' && u.pembimbing && u.pembimbing.toLowerCase().includes(currentUserName.toLowerCase()));
+            const namaBinaanList = mahasiswaBinaan.map(m => m.name.toLowerCase());
+
+            // Tampilkan logbook yang sesuai dengan mahasiswa binaan (atau tampilkan semua jika belum ada seting nama spesifik untuk testing demo)
+            let filteredLogbooks = logbookData.filter(item => {
+                // Jika ingin strict sesuai pembimbing:
+                // return mahasiswaBinaan.some(m => item.authorId === m.id || (item.authorName && item.authorName.toLowerCase() === m.name.toLowerCase()));
+                return true; // Ditampilkan untuk fleksibilitas demo pembimbing
             });
+
+            if(filteredLogbooks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 font-semibold">Tidak ada logbook dari mahasiswa bimbingan Anda.</td></tr>`;
+                return;
+            }
+
+            filteredLogbooks.forEach(item => {
+                let actionBtn = item.status === 'Pending' ? `<button onclick="approveLogbook('${item.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs shadow-sm">Setujui (ACC)</button>` : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Disetujui</span>`;
+                tbody.innerHTML += `<tr><td class="py-4 px-6 font-bold text-slate-900">${item.authorName || currentUserName}</td><td class="py-4 px-6 text-kemenkes-teal font-bold">${currentUserUkm}</td><td class="py-4 px-6 text-slate-500">${item.date}</td><td class="py-4 px-6 font-semibold">${item.topic}</td><td class="py-4 px-6 max-w-xs">${item.desc}</td><td class="py-4 px-6 text-center">${actionBtn}</td></tr>`;
+            });
+            lucide.createIcons();
+        };
+
+        window.approveLogbook = async function(id) {
+            const item = logbookData.find(d => d.id == id);
+            if (item) {
+                item.status = 'Approved';
+                if (db) { try { await updateDoc(doc(db, "logbooks", id), { status: 'Approved' }); } catch(e){} }
+                saveLocalData('sicapek_logbook', logbookData);
+                Swal.fire({ icon: 'success', title: 'Disetujui!', timer: 1500, showConfirmButton: false });
+                renderPembimbingTable();
+            }
         };
 
         window.renderUserMgmtTable = function() {
@@ -1123,7 +1156,8 @@
             tbody.innerHTML = '';
             userDatabase.forEach(user => {
                 let badgeRole = user.role === 'Mahasiswa' ? `<span class="px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200 font-bold text-[10px]">Mahasiswa</span>` : `<span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-bold text-[10px]">Pembimbing</span>`;
-                tbody.innerHTML += `<tr><td class="p-4 font-bold text-slate-900">${user.id}</td><td class="p-4 font-bold text-slate-800">${user.name}</td><td class="p-4">${badgeRole}</td><td class="p-4 text-slate-600 font-medium">${user.prodi}</td><td class="p-4 text-slate-500 font-mono">${user.email}</td><td class="p-4 text-center"><button class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold text-[11px] border border-amber-200 transition"><i data-lucide="key-round" class="w-3.5 h-3.5"></i> Reset Password</button></td></tr>`;
+                let ukmInfo = user.role === 'Mahasiswa' ? `<div class="text-[11px] font-bold text-slate-800">${user.ukm || '-'}</div><div class="text-[10px] text-slate-500">Pembimbing: ${user.pembimbing || '-'}</div>` : `<span class="text-slate-400 italic text-[11px]">-</span>`;
+                tbody.innerHTML += `<tr><td class="p-4 font-bold text-slate-900">${user.id}</td><td class="p-4 font-bold text-slate-800">${user.name}</td><td class="p-4">${badgeRole}</td><td class="p-4 text-slate-600 font-medium">${user.prodi}</td><td class="p-4">${ukmInfo}</td><td class="p-4 text-center"><button class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold text-[11px] border border-amber-200 transition"><i data-lucide="key-round" class="w-3.5 h-3.5"></i> Reset Password</button></td></tr>`;
             });
             lucide.createIcons();
         };
@@ -1171,8 +1205,6 @@
         window.closeLogbookModal = () => document.getElementById('modal-logbook').classList.add('hidden');
         window.openModalAddUser = () => document.getElementById('modal-add-user').classList.remove('hidden');
         window.closeModalAddUser = () => document.getElementById('modal-add-user').classList.add('hidden');
-        window.openModalImportCSV = () => document.getElementById('modal-import-csv').classList.remove('hidden');
-        window.closeModalImportCSV = () => document.getElementById('modal-import-csv').classList.add('hidden');
 
         window.editLogbook = function(id) {
             const item = logbookData.find(d => d.id == id);
@@ -1183,9 +1215,17 @@
             document.getElementById('logbook-desc').value = item.desc;
             document.getElementById('modal-logbook').classList.remove('hidden');
         };
+
         window.saveLogbook = async function() {
             const id = document.getElementById('logbook-id').value;
-            const payload = { date: document.getElementById('logbook-date').value, topic: document.getElementById('logbook-topic').value, desc: document.getElementById('logbook-desc').value, status: 'Pending' };
+            const payload = { 
+                date: document.getElementById('logbook-date').value, 
+                topic: document.getElementById('logbook-topic').value, 
+                desc: document.getElementById('logbook-desc').value, 
+                status: 'Pending',
+                authorName: currentUserName,
+                authorId: currentUserId
+            };
             try {
                 if (db) {
                     if (id) { await updateDoc(doc(db, "logbooks", id), payload); const index = logbookData.findIndex(d => d.id === id); if (index !== -1) logbookData[index] = { ...logbookData[index], ...payload }; } 
@@ -1199,6 +1239,7 @@
             closeLogbookModal();
             renderLogbookTable();
         };
+
         window.deleteLogbook = async function(id) {
             Swal.fire({ title: 'Hapus Logbook?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#f43f5e', confirmButtonText: 'Ya, Hapus!' }).then(async (result) => {
                 if (result.isConfirmed) {

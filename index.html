@@ -51,9 +51,6 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-kemenkes-lime selection:text-slate-900">
 
-    <!-- Ambient Background Glow -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[350px] bg-gradient-to-tr from-kemenkes-teal/15 via-kemenkes-lime/15 to-white blur-[120px] pointer-events-none -z-10"></div>
-
     <!-- NAVBAR APLIKASI -->
     <nav class="fixed top-0 left-0 w-full z-40 glass-navbar">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -925,7 +922,7 @@
 
         window.submitLombaBaru = async function(form, sourceRole) {
             const isSuper = sourceRole === 'superadmin';
-            const prefix = isSuper ? 'sa-form-' : 'form-';
+            const prefix = isSuper ? 'sa-form-' : 'form';
             const containerId = isSuper ? 'sa-team-members-container' : 'mhs-team-members-container';
             
             let namaMahasiswa = 'Nama User';
